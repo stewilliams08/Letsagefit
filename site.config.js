@@ -70,7 +70,7 @@ module.exports = {
       market:     "Ellettsville",
       phone:      "812-558-5444",
       address:    { street: "4264 N Cypress Ln", city: "Bloomington", state: "IN", zip: "47404" },
-      scheduleUrl:"",                       // ← paste the Ellettsville GHL booking calendar URL
+      scheduleUrl:"https://api.leadconnectorhq.com/widget/booking/irAa7fUFORwGQmbtwYkH",
     },
   },
 };
