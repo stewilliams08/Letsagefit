@@ -1,0 +1,9 @@
+{
+  "name": "fitness-site-starter",
+  "version": "1.0.0",
+  "description": "Rebrandable lead-gen site engine for a single fitness client (config-driven).",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2" }
+}
