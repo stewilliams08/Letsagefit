@@ -126,10 +126,15 @@ function renderPage(slug) {
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.use(express.json({ limit: "10kb" }));
 
-// ── GoHighLevel credentials (from env only — one GHL for the whole brand) ──
-function ghlCreds() {
-  const token = process.env.GHL_TOKEN;
-  const locationId = process.env.GHL_LOCATION_ID;
+// ── GoHighLevel credentials PER location (from env only) ──
+// Each club has its own GHL subaccount, so creds are keyed by location slug:
+//   GHL_TOKEN_BLOOMINGTON / GHL_LOC_BLOOMINGTON
+//   GHL_TOKEN_ELLETTSVILLE / GHL_LOC_ELLETTSVILLE
+// Falls back to a global GHL_TOKEN / GHL_LOCATION_ID if a club has none set.
+function ghlCredsFor(slug) {
+  const key = String(slug || "").toUpperCase().replace(/[^A-Z0-9]/g, "_");
+  const token = process.env["GHL_TOKEN_" + key] || process.env.GHL_TOKEN;
+  const locationId = process.env["GHL_LOC_" + key] || process.env.GHL_LOCATION_ID;
   return token && locationId ? { token, locationId } : null;
 }
 
@@ -182,8 +187,8 @@ app.post("/track-click", async (req, res) => {
     }
     console.log(`[track-click] ${nowIso} | ${action} | loc=${location || "?"} | email=${email || "none"}`);
 
-    // Create/update the GoHighLevel contact (v2 API, Private Integration token).
-    const creds = ghlCreds();
+    // Create/update the GoHighLevel contact in THIS club's subaccount.
+    const creds = ghlCredsFor(location);
     if (creds && isLead) {
       const headers = { Authorization: `Bearer ${creds.token}`, Version: "2021-07-28", "Content-Type": "application/json" };
       const fullName = [firstName, lastName].filter(Boolean).join(" ") || undefined;
