@@ -33,7 +33,7 @@ module.exports = {
     logoAccent: "Fitness",                  // logo: second part (in the accent color)
     tagline:    "Personal training for adults 55+ — strength, balance, and independence.",
     domain:     "letsagefit.com",           // used for canonical + schema URL
-    city:       "Bloomington, IN",
+    city:       "Ellettsville, IN",
   },
 
   // ── Colors ────────────────────────────────────────────────────────────────
@@ -41,9 +41,9 @@ module.exports = {
 
   // ── Contact / location ────────────────────────────────────────────────────
   contact: {
-    phone:   "812-334-7979",
+    phone:   "812-558-5444",
     email:   "",                            // optional (blank = hidden)
-    address: { street: "2894 E 3rd St, Ste 160", city: "Bloomington", state: "IN", zip: "47401" },
+    address: { street: "4264 N Cypress Ln", city: "Bloomington", state: "IN", zip: "47404" },
   },
 
   // ── Legal (used verbatim in the TCPA consent text) ────────────────────────
