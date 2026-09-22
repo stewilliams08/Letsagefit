@@ -119,6 +119,10 @@
   .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
   .vframe{position:relative;aspect-ratio:16/9;background:#0D1B26;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 30px rgba(20,55,65,.08);}
   .vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  /* vertical video testimonials (YouTube Shorts) */
+  .vtgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,290px));gap:22px;justify-content:center;margin-top:34px;}
+  .vtframe{position:relative;aspect-ratio:9/16;background:#0D1B26;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 16px 44px rgba(20,55,65,.18);}
+  .vtframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
   /* member gallery */
   .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;max-width:900px;margin:34px auto 0;}
   .mtile{margin:0;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid rgba(14,154,163,.20);box-shadow:0 12px 34px rgba(20,55,65,.12);}
@@ -397,21 +401,15 @@
     <p class="eye">Real People. Real Progress.</p>
     <h2 style="font-size:34px;">Stories of strength, steadiness, and confidence.</h2>
     <div class="divider"><i class="ti ti-barbell"></i></div>
-    <div class="tgrid" style="text-align:center;margin-top:34px;">
-      <div class="tcard">
-        <div class="tqmark"><i class="ti ti-quote"></i></div>
-        <div class="tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p class="tquote">"I train with hardly any joint pain now. My coach watches every movement and keeps me safe — I feel steadier on the stairs and getting out of a chair than I have in years."</p>
-        <p class="tname">Rochelle · member at 68</p>
-      </div>
-      <div class="tcard">
-        <div class="tqmark"><i class="ti ti-quote"></i></div>
-        <div class="tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p class="tquote">"I was nervous walking in. Nobody rushed me or made me feel out of place. Six months later I'm carrying my own groceries and getting down on the floor to play with my grandkids."</p>
-        <p class="tname">Mary Anne · member at 71</p>
-      </div>
+    <!-- Add a member video: upload as an Unlisted YouTube Short and copy a .vtframe below with the video id. -->
+    <div class="vtgrid">
+      <div class="vtframe"><iframe src="https://www.youtube.com/embed/lwG1J6BWp7k" title="Ageless Fitness member story" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+      <div class="vtframe"><iframe src="https://www.youtube.com/embed/1dW-WGCiEeg" title="Ageless Fitness member story" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+      <div class="vtframe"><iframe src="https://www.youtube.com/embed/INTISfplons" title="Ageless Fitness member story" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+      <div class="vtframe"><iframe src="https://www.youtube.com/embed/fCHNpYgV1iE" title="Ageless Fitness member story" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+      <div class="vtframe"><iframe src="https://www.youtube.com/embed/zzEKDWKVLRA" title="Ageless Fitness member story" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
     </div>
-    <p class="af-note" style="margin-top:20px;">Results vary. These reflect members who followed their coach-led program.</p>
+    <p class="af-note" style="margin-top:20px;">Real members, in their own words. Results vary by individual.</p>
   </div>
 </section>
 
@@ -670,7 +668,7 @@
 <script>
   (function(){
     if(!('IntersectionObserver' in window)){ document.documentElement.classList.remove('reveal-on'); return; }
-    var sel=['section:not(.hero) .eye','section:not(.hero) h2','.divider','.prow','.wrow-img','.prog .card','.wcard','.step','.costcard','.funcs','#video-grid','.tcard','.mtile','.atile','.card','.af-lead-form','.band-navy .lead','.band-cta .lead','.qa'];
+    var sel=['section:not(.hero) .eye','section:not(.hero) h2','.divider','.prow','.wrow-img','.prog .card','.wcard','.step','.costcard','.funcs','.vtframe','.mtile','.atile','.card','.af-lead-form','.band-navy .lead','.band-cta .lead','.qa'];
     var els=[],seen=[];
     sel.forEach(function(x){ Array.prototype.forEach.call(document.querySelectorAll(x),function(e){ if(seen.indexOf(e)===-1){seen.push(e);els.push(e);} }); });
     els.forEach(function(e){ e.classList.add('reveal'); });
