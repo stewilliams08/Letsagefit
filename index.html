@@ -36,6 +36,8 @@
   .btn:hover{background:var(--coral-d);}
   .btn:active{transform:scale(.98);}
   .btn-lg{padding:19px 40px;font-size:20px;}
+  /* visible focus for keyboard + accessibility (audience is 55+) */
+  a:focus-visible,.btn:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(20,55,65,.06);}
   .card,.prow,.tcard{border-color:rgba(14,154,163,.30);}
   section{padding:64px 0;}
@@ -92,7 +94,7 @@
   .step .sicon{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.10);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
   .step .sicon i{font-size:28px;}
   .step h3{color:#fff;font-size:20px;margin-bottom:10px;}
-  .step p{font-size:15.5px;color:#B9C8D2;}
+  .step p{font-size:16px;color:#C3D0DA;}
   /* independence / cost */
   .band-navy{background:var(--navy);color:#DCE7EE;}
   .band-navy h2{color:#fff;}
@@ -102,7 +104,7 @@
   .cost-a{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);}
   .cost-b{background:var(--coral);}
   .cost-num{font-family:'Poppins',sans-serif;font-weight:700;font-size:44px;line-height:1;color:#fff;margin-bottom:8px;}
-  .costcard p{color:#C7D5DE;font-size:15.5px;}
+  .costcard p{color:#C7D5DE;font-size:16px;}
   .cost-b p{color:#EAFBFC;}
   .funcs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px;}
   .func{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#EAF6F7;border-radius:999px;padding:8px 18px;font-family:'Poppins',sans-serif;font-size:15px;letter-spacing:.06em;text-transform:uppercase;}
@@ -123,10 +125,11 @@
   .vtgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,290px));gap:22px;justify-content:center;margin-top:34px;}
   .vtframe{position:relative;aspect-ratio:9/16;background:#0D1B26;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 16px 44px rgba(20,55,65,.18);}
   .vtframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  /* member gallery */
-  .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;max-width:900px;margin:34px auto 0;}
-  .mtile{margin:0;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid rgba(14,154,163,.20);box-shadow:0 12px 34px rgba(20,55,65,.12);}
-  .mtile img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;}
+  /* member results — "what are you getting stronger for" (real whiteboard photos) */
+  .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,210px));gap:18px;justify-content:center;max-width:980px;margin:34px auto 0;}
+  .rcard{margin:0;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid rgba(14,154,163,.20);box-shadow:0 12px 34px rgba(20,55,65,.12);}
+  .rcard img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;}
+  .rhint{display:none;}
   /* action strip — wide in-the-gym photos */
   .astrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;max-width:1000px;margin:34px auto 0;}
   .atile{margin:0;border-radius:16px;overflow:hidden;border:1px solid rgba(14,154,163,.20);box-shadow:0 14px 40px rgba(20,55,65,.16);}
@@ -178,6 +181,12 @@
     .prow-img,.wrow-img{width:100%;min-height:220px;}
     .foot .wrap{grid-template-columns:1fr;}
     section{padding:48px 0;}
+    /* member results become a simple swipeable carousel on phones */
+    .rgrid{display:flex;grid-template-columns:none;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:10px;}
+    .rcard{flex:0 0 78%;scroll-snap-align:center;}
+    .rgrid::-webkit-scrollbar{height:6px;}
+    .rgrid::-webkit-scrollbar-thumb{background:rgba(14,154,163,.35);border-radius:3px;}
+    .rhint{display:block;margin-top:12px;font-size:14px;color:var(--blue);font-weight:600;}
   }
   /* nav book button */
   .nav-right{display:flex;align-items:center;gap:18px;}
@@ -225,7 +234,7 @@
     <span class="logo">Ageless<b>Fitness</b></span>
     <span class="nav-right">
       <a class="nav-phone" id="nav-phone" href="tel:{{PHONE_DIGITS}}">{{PHONE}}</a>
-      <a class="btn nav-book" href="#contact" onclick="scrollToForm();return false;">Book Free Consult</a>
+      <a class="btn nav-book" href="#contact" onclick="scrollToForm();return false;">Free Assessment</a>
     </span>
   </div>
 </div>
@@ -237,7 +246,8 @@
     <h1>Stay strong. Stay steady.<br>Do more of what you love.</h1>
     <p class="lead">Small-group and 1-on-1 training built for adults 55+. Move better, feel stronger, and stay active for years to come.</p>
     <p class="hero-stars">★★★★★ <span>Real coaching adults 55+ trust</span></p>
-    <a class="btn btn-lg" href="#contact" onclick="scrollToForm();return false;">Book Your Free Consultation</a>
+    <a class="btn btn-lg" href="#contact" onclick="scrollToForm();return false;">Schedule My Free Assessment</a>
+    <p style="font-size:14.5px;color:var(--body);margin-top:12px;">Free consultation + movement assessment · No pressure, no commitment</p>
     <div class="trustrow">
       <span><i class="ti ti-shield-check"></i> Safe, coach-led</span>
       <span><i class="ti ti-users"></i> 1-on-1 &amp; small groups</span>
@@ -257,6 +267,22 @@
       <figure class="atile"><img src="/assets/ageless/ageless-action-2.jpg" alt="Members celebrating their strength at Ageless Fitness" loading="lazy"></figure>
       <figure class="atile"><img src="/assets/ageless/ageless-action-1.jpg" alt="Member training at Ageless Fitness" loading="lazy"></figure>
     </div>
+  </div>
+</section>
+
+<!-- ============ WHAT ARE YOU GETTING STRONGER FOR? (real member results) ============
+     Cards auto-render from /assets/ageless/results/ (drop in result-01.jpg, result-02.jpg …).
+     The server hides this whole section (sets the `hidden` attribute) whenever that folder is
+     empty, so visitors never see developer placeholders. Each photo's whiteboard is the
+     message, so no caption text is added. Designed to hold ~8–13 photos with no redesign. -->
+<section id="results" {{RESULTS_HIDDEN}}>
+  <div class="wrap center">
+    <p class="eye">Real member results</p>
+    <h2 style="font-size:34px;max-width:720px;margin:0 auto;">What are you getting stronger for?</h2>
+    <div class="divider"><i class="ti ti-barbell"></i></div>
+    <p class="lead narrow" style="margin-top:20px;">Getting off the floor. Carrying the groceries. Keeping up with the grandkids. Traveling. Gardening. Our members train for the real-life things they love — here's what they're working toward.</p>
+    <div class="rgrid">{{RESULT_CARDS}}</div>
+    <p class="rhint"><i class="ti ti-hand-finger" style="vertical-align:-2px;"></i> Swipe to see more</p>
   </div>
 </section>
 
@@ -311,23 +337,24 @@
 <section>
   <div class="wrap center">
     <p class="eye">How It Works</p>
-    <h2 style="font-size:34px;">Three simple steps.</h2>
+    <h2 style="font-size:34px;">Your first visit isn't a workout.</h2>
     <div class="divider"><i class="ti ti-barbell"></i></div>
+    <p class="lead narrow" style="margin-top:20px;">It's a relaxed conversation — no exercise, no pressure. Here's exactly what happens, even if you haven't worked out in years.</p>
     <div class="steps">
       <div class="step">
         <div class="sicon"><i class="ti ti-message-circle"></i></div>
-        <h3>Start With a Conversation</h3>
-        <p>We talk about your goals, concerns, injuries, and what you want life to feel like — not just what you want to "fix."</p>
+        <h3>Meet Your Coach &amp; Talk</h3>
+        <p>Sit down with your coach, talk through your goals, and tell us what currently feels difficult — the stairs, getting off the floor, whatever it is. No exercise, no pressure.</p>
       </div>
       <div class="step">
-        <div class="sicon"><i class="ti ti-clipboard-list"></i></div>
-        <h3>Build Your Personal Plan</h3>
-        <p>We design a program focused on strength, balance, stability, and mobility — tailored to you.</p>
+        <div class="sicon"><i class="ti ti-clipboard-check"></i></div>
+        <h3>A Simple Movement Check</h3>
+        <p>We'll do a few gentle movements to see where you're starting today. It's easy and low-key — it just shows us exactly how to help.</p>
       </div>
       <div class="step">
-        <div class="sicon"><i class="ti ti-run"></i></div>
-        <h3>Feel the Difference</h3>
-        <p>You'll move with more confidence, feel steadier on your feet, and notice daily tasks getting easier — with clear next steps and no long-term contracts.</p>
+        <div class="sicon"><i class="ti ti-map-2"></i></div>
+        <h3>Get Your Personal Plan</h3>
+        <p>Together we map out the right plan for you — built around strength, balance, and the real-life things you want to keep doing. No long-term contracts.</p>
       </div>
     </div>
   </div>
@@ -336,11 +363,16 @@
 <!-- ============ INDEPENDENCE / COST (navy band) ============ -->
 <section class="band-navy">
   <div class="wrap center">
-    <p class="eye">The Facts on Aging Well</p>
-    <h2 style="font-size:34px;max-width:760px;margin:0 auto;">Aging well isn't luck. It's built.</h2>
+    <p class="eye">Why Strength Matters</p>
+    <h2 style="font-size:33px;max-width:840px;margin:0 auto;">Strength isn't about lifting the most weight. It's about keeping your life.</h2>
     <div class="divider"><i class="ti ti-barbell"></i></div>
-    <p class="lead narrow" style="color:#C7D5DE;margin-top:22px;">The research is clear: staying strong and steady keeps you active, mobile, and doing more of what you love — for longer. Here's why it matters.</p>
-    <div class="costgrid" style="grid-template-columns:repeat(3,1fr);">
+    <p class="lead narrow" style="color:#D6E2EA;margin-top:22px;">The stronger and steadier you stay, the longer you keep doing what matters — getting off the floor, carrying your own groceries, climbing stairs with confidence, traveling, gardening, and keeping up with the grandkids.</p>
+    <div class="funcs">
+      <span class="func">Getting off the floor</span><span class="func">Carrying groceries</span><span class="func">Climbing stairs</span>
+      <span class="func">Playing with grandkids</span><span class="func">Traveling</span><span class="func">Gardening</span><span class="func">Staying independent</span>
+    </div>
+    <p class="narrow" style="color:#9FB2BF;margin-top:42px;font-size:15.5px;letter-spacing:.03em;text-transform:uppercase;">And the research backs it up</p>
+    <div class="costgrid" style="grid-template-columns:repeat(3,1fr);margin-top:16px;">
       <div class="costcard cost-a">
         <div class="cost-num">3&ndash;5%</div>
         <p>of your muscle is lost each decade after 30 — and it speeds up after 60. Strength training is the proven way to rebuild it.</p>
@@ -350,15 +382,11 @@
         <p>adults 65+ fall each year (CDC). Balance and strength training is one of the most effective ways to lower that risk.</p>
       </div>
       <div class="costcard cost-b">
-        <div class="cost-num"><span id="cost-count">$6,200</span><span style="font-size:20px;">/mo</span></div>
-        <p>the average cost of assisted living in 2025 — a few hours of training a week is a tiny fraction of that.</p>
+        <div class="cost-num">A few hours<span style="font-size:20px;">/wk</span></div>
+        <p>is all it takes to build the strength and balance that keep you steady, capable, and doing what you love.</p>
       </div>
     </div>
-    <div class="funcs">
-      <span class="func">Strength</span><span class="func">Balance</span><span class="func">Mobility</span>
-      <span class="func">Coordination</span><span class="func">Endurance</span><span class="func">Confidence</span>
-    </div>
-    <p style="color:#7E95A4;font-size:12.5px;margin-top:24px;max-width:640px;margin-left:auto;margin-right:auto;">Sources: CDC (falls among adults 65+); Genworth / CareScout 2025 Cost of Care Survey (assisted living). Muscle-loss figures reflect published aging research.</p>
+    <p style="color:#7E95A4;font-size:12.5px;margin-top:24px;max-width:640px;margin-left:auto;margin-right:auto;">Sources: CDC (falls among adults 65+). Muscle-loss figures reflect published aging research.</p>
   </div>
 </section>
 
@@ -425,25 +453,10 @@
     <div style="max-width:760px;margin:34px auto 0;">
       <div class="qa"><h3>Is this safe for me if I have joint pain or health concerns?</h3><p>Yes. Everything starts with a conversation about your body, your history, and any limitations. Your coach builds the plan around what's safe for you and adjusts as you go — nothing is one-size-fits-all.</p></div>
       <div class="qa"><h3>I haven't exercised in years. Is it too late to start?</h3><p>It's never too late — and starting later is exactly who this is for. We begin gently, meet you at your level, and build from there. Most members are surprised how quickly they feel steadier and stronger.</p></div>
-      <div class="qa"><h3>Will I be the oldest or least-fit person there?</h3><p>No. Our members are adults 55+ at every starting point, and the room is welcoming and unhurried — no judgment, no keeping up with 25-year-olds. Just people working on staying strong and independent.</p></div>
+      <div class="qa"><h3>Will I be the oldest or least-fit person there?</h3><p>No. Our members are adults 55+ at every starting point, and the room is welcoming and unhurried — no judgment, and no pressure to keep up with anyone else. Your training starts with where you are today. Just people working on staying strong and independent.</p></div>
       <div class="qa"><h3>Do I need any equipment or experience?</h3><p>None. Just comfortable clothes and shoes. Your coach guides every movement and shows you exactly what to do.</p></div>
       <div class="qa"><h3>What does it cost?</h3><p>Your first consultation and movement assessment are free — no pressure, no commitment. We'll talk through the options and the right plan for your goals when you come in.</p></div>
       <div class="qa"><h3>How do I get started?</h3><p>Book your free consultation below, or give us a call. We'll set a time, meet you, and map out a simple first step.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MEET OUR MEMBERS (photo gallery) ============ -->
-<section>
-  <div class="wrap center">
-    <p class="eye">Meet Our Members</p>
-    <h2 style="font-size:34px;">Real people. Right here.</h2>
-    <div class="divider"><i class="ti ti-barbell"></i></div>
-    <!-- Add a member: drop ageless-member-N.jpg in /assets/ageless and copy a tile below. -->
-    <div class="mgrid">
-      <figure class="mtile"><img src="/assets/ageless/ageless-member-1.jpg" alt="Ageless Fitness member — getting stronger" loading="lazy"></figure>
-      <figure class="mtile"><img src="/assets/ageless/ageless-member-3.jpg" alt="Ageless Fitness member — more confidence" loading="lazy"></figure>
-      <figure class="mtile"><img src="/assets/ageless/ageless-member-2.jpg" alt="Ageless Fitness member" loading="lazy"></figure>
     </div>
   </div>
 </section>
@@ -454,32 +467,33 @@
     <p class="eye">Ready when you are</p>
     <h2 style="font-size:34px;max-width:680px;margin:0 auto;">Ready to feel stronger and more confident?</h2>
     <div class="divider"><i class="ti ti-barbell"></i></div>
-    <p class="lead narrow" style="margin-top:20px;">Book a free consultation and movement assessment. We'll talk through your goals, see where you're starting, and map out a simple plan — no pressure, no commitment.</p>
-    <a class="btn btn-lg" href="#contact" onclick="scrollToForm();return false;" style="margin-top:6px;">Book Your Free Consultation</a>
+    <p class="lead narrow" style="margin-top:20px;">Meet your coach, talk through your goals, and see where you're starting — with a simple movement assessment. No pressure. No commitment.</p>
+    <a class="btn btn-lg" href="#contact" onclick="scrollToForm();return false;" style="margin-top:6px;">Schedule My Free Assessment</a>
   </div>
 </section>
 
 <!-- ============ CONTACT / LEAD FORM ============ -->
 <section id="contact">
   <div class="wrap center">
-    <p class="eye">Request Your Free Consultation</p>
+    <p class="eye">Schedule Your Free Assessment</p>
     <h2 style="font-size:34px;">We'll help you reach your goals.</h2>
+    <p class="lead narrow" style="margin-top:16px;">Meet your coach, talk through your goals, and see where you're starting. No pressure. No commitment.</p>
     <div class="divider"><i class="ti ti-barbell"></i></div>
     <div class="formwrap">
       <form class="af-lead-form" id="af-form" onsubmit="return false;">
         <div class="af-fields">
           <div class="row2">
-            <input type="text" class="af-first" placeholder="First name" autocomplete="given-name" />
-            <input type="text" class="af-last" placeholder="Last name" autocomplete="family-name" />
+            <input type="text" class="af-first" placeholder="First name" aria-label="First name" autocomplete="given-name" />
+            <input type="text" class="af-last" placeholder="Last name" aria-label="Last name" autocomplete="family-name" />
           </div>
-          <input type="tel" class="af-phone" placeholder="Phone number" autocomplete="tel" inputmode="tel" />
-          <input type="email" class="af-email" placeholder="Email address" autocomplete="email" inputmode="email" />
+          <input type="tel" class="af-phone" placeholder="Phone number" aria-label="Phone number" autocomplete="tel" inputmode="tel" />
+          <input type="email" class="af-email" placeholder="Email address" aria-label="Email address" autocomplete="email" inputmode="email" />
           <div class="consent-row af-consent-row">
             <input type="checkbox" class="af-consent" id="af-consent" />
             <label for="af-consent" class="af-consent-text">{{CONSENT_LABEL}}</label>
           </div>
-          <button type="button" class="btn af-submit">Request My Free Consultation</button>
-          <p class="af-note">No pressure and no commitment. We'll reach out to set up your free consultation.</p>
+          <button type="button" class="btn af-submit">Schedule My Free Assessment</button>
+          <p class="af-note">No pressure and no commitment. We'll reach out to set up your free consultation and movement assessment.</p>
         </div>
         <div class="af-thankyou" style="display:none;"></div>
       </form>
@@ -553,8 +567,8 @@
     ty.innerHTML =
       '<div class="chk"><i class="ti ti-check" style="color:var(--blue);font-size:30px;"></i></div>' +
       '<h3>Thanks, <span class="af-ty-name"></span>!</h3>' +
-      '<p>Your request is in. The last step is to pick a time for your free consultation — choose whatever works best for you.</p>' +
-      '<a class="btn btn-lg af-ty-book" style="text-decoration:none;">Schedule My Consultation →</a>' +
+      '<p>Your request is in. The last step is to pick a time for your free assessment — choose whatever works best for you.</p>' +
+      '<a class="btn btn-lg af-ty-book" style="text-decoration:none;">Schedule My Free Assessment →</a>' +
       '<p class="af-note" style="margin-top:14px;">Prefer we call you? We’ll reach out to set up your visit either way.</p>';
     ty.querySelector('.af-ty-name').textContent = first || 'there';
     var book = ty.querySelector('.af-ty-book');
@@ -669,7 +683,7 @@
 <script>
   (function(){
     if(!('IntersectionObserver' in window)){ document.documentElement.classList.remove('reveal-on'); return; }
-    var sel=['section:not(.hero) .eye','section:not(.hero) h2','.divider','.prow','.wrow-img','.prog .card','.wcard','.step','.costcard','.funcs','.vtframe','.mtile','.atile','.card','.af-lead-form','.band-navy .lead','.band-cta .lead','.qa'];
+    var sel=['section:not(.hero) .eye','section:not(.hero) h2','.divider','.prow','.wrow-img','.prog .card','.wcard','.step','.costcard','.funcs','.vtframe','.atile','.card','.af-lead-form','.band-navy .lead','.band-cta .lead','.qa'];
     var els=[],seen=[];
     sel.forEach(function(x){ Array.prototype.forEach.call(document.querySelectorAll(x),function(e){ if(seen.indexOf(e)===-1){seen.push(e);els.push(e);} }); });
     els.forEach(function(e){ e.classList.add('reveal'); });
@@ -680,7 +694,7 @@
 <!-- sticky mobile CTA -->
 <div class="stickybar">
   <a class="sb-call" href="tel:{{PHONE_DIGITS}}"><i class="ti ti-phone"></i> Call</a>
-  <a class="sb-book" href="#contact" onclick="scrollToForm();return false;">Book Free Consult</a>
+  <a class="sb-book" href="#contact" onclick="scrollToForm();return false;">Free Assessment</a>
 </div>
 <script>
   (function(){

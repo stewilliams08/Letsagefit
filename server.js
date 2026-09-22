@@ -107,12 +107,34 @@ function esc(s) {
     .replace(/"/g, "&quot;");
 }
 
+// ── Member "what are you getting stronger for?" result photos ──
+// One card per image in assets/ageless/results/ (drop in result-01.jpg, result-02.jpg …,
+// rendered in sorted order). When the folder is empty the whole section is hidden, so
+// visitors never see developer placeholders. Scanned per render, so newly added photos
+// appear on the next deploy without code changes. Alt text is generic on purpose — the
+// whiteboard in each photo carries the specific message and we don't invent unknown text.
+function resultCards() {
+  const dir = path.join(__dirname, "assets", "ageless", "results");
+  let files = [];
+  try {
+    files = fs.readdirSync(dir).filter((f) => /\.(jpe?g|png|webp)$/i.test(f) && !/^\./.test(f)).sort();
+  } catch (e) { files = []; }
+  const alt = "Ageless Fitness member holding a whiteboard sharing what they&#8217;re getting stronger for";
+  const cards = files.map((f) =>
+    `<figure class="rcard"><img src="/assets/ageless/results/${encodeURIComponent(f)}" alt="${alt}" loading="lazy" decoding="async"></figure>`
+  ).join("\n      ");
+  return { count: files.length, cards };
+}
+
 // ── Render the page for one location ──
 function renderPage(slug) {
   const cfg = gymConfigFor(slug);
   const gymJson = JSON.stringify(cfg).replace(/</g, "\\u003c");
   const phoneDigits = String(cfg.phone || "").replace(/[^0-9]/g, "");
+  const results = resultCards();
   return TEMPLATE
+    .replace("{{RESULTS_HIDDEN}}", results.count ? "" : "hidden")
+    .replace("{{RESULT_CARDS}}", results.cards)
     .replace(/\{\{MARKET_CITY\}\}/g, esc(cfg.marketCity))
     .replace(/\{\{ADDRESS\}\}/g, esc(cfg.address))
     .replace(/\{\{PHONE_DIGITS\}\}/g, phoneDigits)
