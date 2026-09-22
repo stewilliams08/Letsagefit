@@ -119,6 +119,10 @@
   .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;}
   .vframe{position:relative;aspect-ratio:16/9;background:#0D1B26;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 30px rgba(20,55,65,.08);}
   .vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  /* member gallery */
+  .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;max-width:900px;margin:34px auto 0;}
+  .mtile{margin:0;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid rgba(14,154,163,.20);box-shadow:0 12px 34px rgba(20,55,65,.12);}
+  .mtile img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;}
   /* CTA band — background photo with overlay + white text */
   .band-cta{background:linear-gradient(rgba(14,38,58,.62),rgba(14,38,58,.52)),url('/assets/ageless/ageless-cta.jpg') center/cover no-repeat,var(--navy);}
   .band-cta .eye{color:#FBD5C9;}
@@ -413,6 +417,20 @@
   </div>
 </section>
 
+<!-- ============ MEET OUR MEMBERS (photo gallery) ============ -->
+<section>
+  <div class="wrap center">
+    <p class="eye">Meet Our Members</p>
+    <h2 style="font-size:34px;">Real people. Right here.</h2>
+    <div class="divider"><i class="ti ti-barbell"></i></div>
+    <!-- Add a member: drop ageless-member-N.jpg in /assets/ageless and copy a tile below. -->
+    <div class="mgrid">
+      <figure class="mtile"><img src="/assets/ageless/ageless-member-1.jpg" alt="Ageless Fitness member" loading="lazy"></figure>
+      <figure class="mtile"><img src="/assets/ageless/ageless-member-2.jpg" alt="Ageless Fitness member" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
 <!-- ============ CTA BAND ============ -->
 <section class="band-cta center">
   <div class="wrap">
@@ -634,7 +652,7 @@
 <script>
   (function(){
     if(!('IntersectionObserver' in window)){ document.documentElement.classList.remove('reveal-on'); return; }
-    var sel=['section:not(.hero) .eye','section:not(.hero) h2','.divider','.prow','.wrow-img','.prog .card','.wcard','.step','.costcard','.funcs','#video-grid','.tcard','.card','.af-lead-form','.band-navy .lead','.band-cta .lead','.qa'];
+    var sel=['section:not(.hero) .eye','section:not(.hero) h2','.divider','.prow','.wrow-img','.prog .card','.wcard','.step','.costcard','.funcs','#video-grid','.tcard','.mtile','.card','.af-lead-form','.band-navy .lead','.band-cta .lead','.qa'];
     var els=[],seen=[];
     sel.forEach(function(x){ Array.prototype.forEach.call(document.querySelectorAll(x),function(e){ if(seen.indexOf(e)===-1){seen.push(e);els.push(e);} }); });
     els.forEach(function(e){ e.classList.add('reveal'); });
