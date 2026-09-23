@@ -16,7 +16,7 @@
 <meta property="og:image" content="{{SITE_URL}}/assets/ageless/og-image.jpg">
 <meta property="og:image:width" content="1340">
 <meta property="og:image:height" content="705">
-<meta property="og:image:alt" content="Ageless Fitness members celebrating their strength">
+<meta property="og:image:alt" content="Ageless Fitness members training together">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ageless Fitness {{MARKET_CITY}} — Personal Training for Adults 55+">
 <meta name="twitter:description" content="Small, supportive training for adults 55+ in {{MARKET_CITY}} — strength, balance, and confidence to keep doing what you love.">
@@ -191,6 +191,16 @@
 
   @media (max-width:760px){
     .hero h1{font-size:38px;}
+    /* On phones the light wash makes the photo nearly invisible — use a darker
+       tint + white text so the hero photo actually shows and text stays crisp. */
+    .hero{background:linear-gradient(rgba(14,38,58,.50),rgba(14,38,58,.60)),url('/assets/ageless/ageless-hero.jpg') center 32%/cover no-repeat,var(--navy);}
+    .hero .eye{color:#FBD5C9;}
+    .hero h1{color:#fff;}
+    .hero .lead{color:#EAF2F8;}
+    .hero .hero-note{color:#DCEAF2 !important;}
+    .hero .hero-stars span{color:#EAF2F8;}
+    .hero .trustrow{color:#E7EFF4;}
+    .hero .trustrow i{color:#fff;}
     .prog,.steps,.costgrid,.tgrid,.vgrid{grid-template-columns:1fr;}
     .prow,.prow-rev,.wrow{flex-direction:column;}
     .prow-img,.wrow-img{width:100%;min-height:220px;}
@@ -262,7 +272,7 @@
     <p class="lead">Small-group and 1-on-1 training built for adults 55+. Move better, feel stronger, and stay active for years to come.</p>
     <p class="hero-stars">★★★★★ <span>Real coaching adults 55+ trust</span></p>
     <a class="btn btn-lg" href="#contact" onclick="scrollToForm();return false;">Schedule My Free Assessment</a>
-    <p style="font-size:14.5px;color:var(--body);margin-top:12px;">Free consultation + movement assessment · No pressure, no commitment</p>
+    <p class="hero-note" style="font-size:14.5px;color:var(--body);margin-top:12px;">Free consultation + movement assessment · No pressure, no commitment</p>
     <div class="trustrow">
       <span><i class="ti ti-shield-check"></i> Safe, coach-led</span>
       <span><i class="ti ti-users"></i> 1-on-1 &amp; small groups</span>
