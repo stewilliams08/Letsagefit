@@ -132,9 +132,12 @@ function renderPage(slug) {
   const gymJson = JSON.stringify(cfg).replace(/</g, "\\u003c");
   const phoneDigits = String(cfg.phone || "").replace(/[^0-9]/g, "");
   const results = resultCards();
+  // Absolute site origin for canonical + Open Graph (link-preview) tags.
+  const siteUrl = "https://www." + String((CONFIG.brand && CONFIG.brand.domain) || "letsagefit.com").replace(/^www\./, "");
   return TEMPLATE
     .replace("{{RESULTS_HIDDEN}}", results.count ? "" : "hidden")
     .replace("{{RESULT_CARDS}}", results.cards)
+    .replace(/\{\{SITE_URL\}\}/g, siteUrl)
     .replace(/\{\{MARKET_CITY\}\}/g, esc(cfg.marketCity))
     .replace(/\{\{ADDRESS\}\}/g, esc(cfg.address))
     .replace(/\{\{PHONE_DIGITS\}\}/g, phoneDigits)
