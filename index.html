@@ -149,6 +149,8 @@
   .astrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;max-width:1060px;margin:34px auto 0;}
   .atile{margin:0;border-radius:16px;overflow:hidden;border:1px solid rgba(14,154,163,.20);box-shadow:0 14px 40px rgba(20,55,65,.16);}
   .atile img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;}
+  .wlist-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px 34px;max-width:900px;margin:30px auto 0;text-align:left;}
+  .band-teal .atile{border-color:rgba(255,255,255,.28);}
   /* CTA band — background photo with overlay + white text */
   .band-cta{background:linear-gradient(rgba(14,38,58,.62),rgba(14,38,58,.52)),url('/assets/ageless/ageless-cta.jpg') center/cover no-repeat,var(--navy);}
   .band-cta .eye{color:#FBD5C9;}
@@ -201,7 +203,7 @@
     .hero .hero-stars span{color:#EAF2F8;}
     .hero .trustrow{color:#E7EFF4;}
     .hero .trustrow i{color:#fff;}
-    .prog,.steps,.costgrid,.tgrid,.vgrid{grid-template-columns:1fr;}
+    .prog,.steps,.costgrid,.tgrid,.vgrid,.wlist-2col{grid-template-columns:1fr;}
     .prow,.prow-rev,.wrow{flex-direction:column;}
     .prow-img,.wrow-img{width:100%;min-height:220px;}
     .foot .wrap{grid-template-columns:1fr;}
@@ -281,21 +283,6 @@
   </div>
 </section>
 
-<!-- ============ IN THE GYM (action strip) ============ -->
-<section>
-  <div class="wrap center">
-    <p class="eye">Inside our gym</p>
-    <h2 style="font-size:34px;">Real training. Real energy.</h2>
-    <div class="divider"><i class="ti ti-barbell"></i></div>
-    <!-- Add a wide action photo: drop ageless-action-N.jpg in /assets/ageless and copy a tile below. -->
-    <div class="astrip">
-      <figure class="atile"><img src="/assets/ageless/ageless-action-2.jpg" alt="Two members celebrating their strength at Ageless Fitness" loading="lazy"></figure>
-      <figure class="atile"><img src="/assets/ageless/ageless-action-3.jpg" alt="Two members together at Ageless Fitness" loading="lazy"></figure>
-      <figure class="atile"><img src="/assets/ageless/ageless-action-1.jpg" alt="Member rowing at Ageless Fitness" loading="lazy"></figure>
-    </div>
-  </div>
-</section>
-
 <!-- ============ WHAT ARE YOU GETTING STRONGER FOR? (real member results) ============
      Cards auto-render from /assets/ageless/results/ (drop in result-01.jpg, result-02.jpg …).
      The server hides this whole section (sets the `hidden` attribute) whenever that folder is
@@ -347,14 +334,17 @@
     <div class="divider"><i class="ti ti-barbell"></i></div>
   </div>
   <div class="wrap">
-    <div class="wrow">
-      <img class="wrow-img" src="/assets/ageless/ageless-why.jpg" alt="Ageless Fitness members training together" onerror="this.style.display='none'">
-      <ul class="wlist">
-        <li><i class="ti ti-circle-check"></i> Coaching that prioritizes safety, joint health, and balance.</li>
-        <li><i class="ti ti-circle-check"></i> Exercises that translate to real life — stairs, lifting, getting up from the floor.</li>
-        <li><i class="ti ti-circle-check"></i> A calm, respectful environment where you're never rushed or judged.</li>
-        <li><i class="ti ti-circle-check"></i> Progress tracked so you can see and feel the difference.</li>
-      </ul>
+    <ul class="wlist wlist-2col">
+      <li><i class="ti ti-circle-check"></i> Coaching that prioritizes safety, joint health, and balance.</li>
+      <li><i class="ti ti-circle-check"></i> Exercises that translate to real life — stairs, lifting, getting up from the floor.</li>
+      <li><i class="ti ti-circle-check"></i> A calm, respectful environment where you're never rushed or judged.</li>
+      <li><i class="ti ti-circle-check"></i> Progress tracked so you can see and feel the difference.</li>
+    </ul>
+    <!-- Real members in the gym. Add one: drop ageless-action-N.jpg in /assets/ageless and copy a tile. -->
+    <div class="astrip" style="margin-top:38px;">
+      <figure class="atile"><img src="/assets/ageless/ageless-action-2.jpg" alt="Two members celebrating their strength at Ageless Fitness" loading="lazy"></figure>
+      <figure class="atile"><img src="/assets/ageless/ageless-action-3.jpg" alt="Two members together at Ageless Fitness" loading="lazy"></figure>
+      <figure class="atile"><img src="/assets/ageless/ageless-action-1.jpg" alt="Member rowing at Ageless Fitness" loading="lazy"></figure>
     </div>
   </div>
 </section>
