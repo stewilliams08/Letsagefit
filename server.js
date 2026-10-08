@@ -34,6 +34,22 @@ const CONSENT_LOC = {
 // Fail fast at boot if the consent entity is misconfigured (never render generic text).
 buildConsentText(CONSENT_LOC);
 
+// Per-location consent subject. A club may be a different operating LLC (set
+// `legalEntity` on its location block); otherwise it uses the shared default.
+// Used for BOTH the displayed checkbox AND the recorded consent, so they can
+// never drift. Validated at boot below.
+function consentLocFor(slug) {
+  const loc = LOCATIONS[slug] || {};
+  return {
+    legalEntity: loc.legalEntity || (CONFIG.legal && CONFIG.legal.legalEntity),
+    dbaName:     loc.dbaName || (CONFIG.legal && CONFIG.legal.dbaName),
+    gymName:     CONFIG.brand && CONFIG.brand.name,
+    locationKey: slug || CONSENT_LOC.locationKey,
+  };
+}
+// Validate every location's consent subject at boot (never render generic text).
+Object.keys(LOCATIONS).forEach((slug) => buildConsentText(consentLocFor(slug)));
+
 // ── Format a location's address block into one line ──
 function formatAddress(a) {
   a = a || {};
@@ -79,8 +95,8 @@ function adsTag() {
 }
 
 // ── Consent label HTML for the checkbox (escape, then linkify Privacy/Terms) ──
-function consentLabelHtml() {
-  const escaped = buildConsentText(CONSENT_LOC)
+function consentLabelHtml(slug) {
+  const escaped = buildConsentText(consentLocFor(slug))
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return escaped
     .replace("Privacy Policy", '<a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>')
@@ -145,7 +161,7 @@ function renderPage(slug) {
     .replace("{{THEME_VARS}}", themeVars())
     .replace("{{ADS_TAG}}", adsTag())
     .replace("{{GYM_CONFIG_JSON}}", gymJson)
-    .replace(/\{\{CONSENT_LABEL\}\}/g, consentLabelHtml());
+    .replace(/\{\{CONSENT_LABEL\}\}/g, consentLabelHtml(slug));
 }
 
 app.use("/assets", express.static(path.join(__dirname, "assets")));
@@ -161,6 +177,43 @@ function ghlCredsFor(slug) {
   const token = process.env["GHL_TOKEN_" + key] || process.env.GHL_TOKEN;
   const locationId = process.env["GHL_LOC_" + key] || process.env.GHL_LOCATION_ID;
   return token && locationId ? { token, locationId } : null;
+}
+
+// ── Email a lead to a club's inbox (for clubs without GoHighLevel) ──
+// Uses Resend's HTTP API (no npm dependency). Set RESEND_API_KEY in env.
+// LEAD_EMAIL_FROM defaults to Resend's shared sender, which delivers to your own
+// Resend-account email with zero DNS setup — verify letsagefit.com in Resend
+// later for a branded From address. Leads are always logged regardless, so a
+// missing key or a send failure never loses a lead.
+function emailLead(toEmail, entry) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) { console.warn("[email] RESEND_API_KEY not set — lead logged but not emailed:", entry.email); return; }
+  const from = process.env.LEAD_EMAIL_FROM || "Ageless Fitness <onboarding@resend.dev>";
+  const name = [entry.firstName, entry.lastName].filter(Boolean).join(" ") || "New lead";
+  const rows = [
+    ["Name", name], ["Phone", entry.phone], ["Email", entry.email],
+    ["Location", entry.location], ["Consent", entry.consent ? "Yes" : "No"],
+    ["Captured", entry.ts],
+  ];
+  if (entry.gclid) rows.push(["gclid", entry.gclid]);
+  if (entry.utmCampaign) rows.push(["Campaign", entry.utmCampaign]);
+  const html =
+    `<h2 style="font-family:system-ui,sans-serif;">New Ageless Fitness lead</h2>` +
+    `<table style="font-family:system-ui,sans-serif;font-size:15px;border-collapse:collapse;">` +
+    rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#667;">${esc(k)}</td><td style="padding:4px 0;"><b>${esc(v || "—")}</b></td></tr>`).join("") +
+    `</table>` +
+    (entry.consentRecord ? `<p style="font-family:system-ui,sans-serif;font-size:11.5px;color:#889;margin-top:16px;">Consent recorded ${esc(entry.consentRecord.consent_timestamp)} (IP ${esc(entry.consentRecord.consent_ip || "—")}).<br>${esc(entry.consentRecord.consent_text)}</p>` : "");
+  const text = rows.map(([k, v]) => `${k}: ${v || "—"}`).join("\n");
+  fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from, to: [toEmail], reply_to: entry.email || undefined,
+      subject: `New Ageless lead — ${name} (${entry.location})`, html, text,
+    }),
+  })
+    .then(async (r) => { if (!r.ok) console.warn("[email] send", r.status, (await r.text()).slice(0, 200)); })
+    .catch((e) => console.warn("[email] send failed:", e.message));
 }
 
 /* ── Lead capture ───────────────────────────────────────────────────────────
@@ -180,6 +233,7 @@ app.post("/track-click", async (req, res) => {
     const ip = (xff ? String(xff).split(",")[0].trim() : null) || req.socket?.remoteAddress || null;
     const nowIso = new Date().toISOString();
     const isLead = action === "join" && !!email;
+    const locObj = LOCATIONS[location] || {};
 
     // Server-side consent enforcement — never trust the client alone.
     if (isLead && consent !== true) {
@@ -188,7 +242,7 @@ app.post("/track-click", async (req, res) => {
     }
 
     const consentRecord = isLead ? {
-      consent_text: buildConsentText(CONSENT_LOC),
+      consent_text: buildConsentText(consentLocFor(location)),
       consent_version: CONSENT_VERSION,
       consent_timestamp: nowIso,
       consent_ip: ip,
@@ -212,9 +266,14 @@ app.post("/track-click", async (req, res) => {
     }
     console.log(`[track-click] ${nowIso} | ${action} | loc=${location || "?"} | email=${email || "none"}`);
 
-    // Create/update the GoHighLevel contact in THIS club's subaccount.
+    // Email-only clubs (leadEmail set, e.g. Aurora) skip GoHighLevel entirely —
+    // the lead is emailed to their inbox instead.
+    if (isLead && locObj.leadEmail) emailLead(locObj.leadEmail, entry);
+
+    // Create/update the GoHighLevel contact in THIS club's subaccount
+    // (skipped for email-only clubs so a global GHL fallback can't catch them).
     const creds = ghlCredsFor(location);
-    if (creds && isLead) {
+    if (creds && isLead && !locObj.leadEmail) {
       const headers = { Authorization: `Bearer ${creds.token}`, Version: "2021-07-28", "Content-Type": "application/json" };
       const fullName = [firstName, lastName].filter(Boolean).join(" ") || undefined;
       // Brand tag on every lead, plus the location slug so you can tell clubs apart.
