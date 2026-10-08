@@ -34,6 +34,22 @@ const CONSENT_LOC = {
 // Fail fast at boot if the consent entity is misconfigured (never render generic text).
 buildConsentText(CONSENT_LOC);
 
+// Per-location consent subject. A club may be a different operating LLC (set
+// `legalEntity` on its location block); otherwise it uses the shared default.
+// Used for BOTH the displayed checkbox AND the recorded consent, so they can
+// never drift. Validated at boot below.
+function consentLocFor(slug) {
+  const loc = LOCATIONS[slug] || {};
+  return {
+    legalEntity: loc.legalEntity || (CONFIG.legal && CONFIG.legal.legalEntity),
+    dbaName:     loc.dbaName || (CONFIG.legal && CONFIG.legal.dbaName),
+    gymName:     CONFIG.brand && CONFIG.brand.name,
+    locationKey: slug || CONSENT_LOC.locationKey,
+  };
+}
+// Validate every location's consent subject at boot (never render generic text).
+Object.keys(LOCATIONS).forEach((slug) => buildConsentText(consentLocFor(slug)));
+
 // ── Format a location's address block into one line ──
 function formatAddress(a) {
   a = a || {};
@@ -79,8 +95,8 @@ function adsTag() {
 }
 
 // ── Consent label HTML for the checkbox (escape, then linkify Privacy/Terms) ──
-function consentLabelHtml() {
-  const escaped = buildConsentText(CONSENT_LOC)
+function consentLabelHtml(slug) {
+  const escaped = buildConsentText(consentLocFor(slug))
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return escaped
     .replace("Privacy Policy", '<a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>')
@@ -145,7 +161,7 @@ function renderPage(slug) {
     .replace("{{THEME_VARS}}", themeVars())
     .replace("{{ADS_TAG}}", adsTag())
     .replace("{{GYM_CONFIG_JSON}}", gymJson)
-    .replace(/\{\{CONSENT_LABEL\}\}/g, consentLabelHtml());
+    .replace(/\{\{CONSENT_LABEL\}\}/g, consentLabelHtml(slug));
 }
 
 app.use("/assets", express.static(path.join(__dirname, "assets")));
@@ -226,7 +242,7 @@ app.post("/track-click", async (req, res) => {
     }
 
     const consentRecord = isLead ? {
-      consent_text: buildConsentText(CONSENT_LOC),
+      consent_text: buildConsentText(consentLocFor(location)),
       consent_version: CONSENT_VERSION,
       consent_timestamp: nowIso,
       consent_ip: ip,

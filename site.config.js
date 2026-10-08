@@ -81,6 +81,9 @@ module.exports = {
       address:    { street: "102 Sycamore Estates Dr", city: "Aurora", state: "IN", zip: "47001" },
       scheduleUrl:"",
       leadEmail:  "agelessauroraIN@gmail.com",
+      // Aurora is operated by a different LLC, so its TCPA consent names JBS
+      // Fitness LLC (the d/b/a stays the shared "Ageless Fitness" brand).
+      legalEntity:"JBS Fitness LLC",
     },
   },
 };
