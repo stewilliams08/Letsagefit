@@ -163,6 +163,43 @@ function ghlCredsFor(slug) {
   return token && locationId ? { token, locationId } : null;
 }
 
+// ── Email a lead to a club's inbox (for clubs without GoHighLevel) ──
+// Uses Resend's HTTP API (no npm dependency). Set RESEND_API_KEY in env.
+// LEAD_EMAIL_FROM defaults to Resend's shared sender, which delivers to your own
+// Resend-account email with zero DNS setup — verify letsagefit.com in Resend
+// later for a branded From address. Leads are always logged regardless, so a
+// missing key or a send failure never loses a lead.
+function emailLead(toEmail, entry) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) { console.warn("[email] RESEND_API_KEY not set — lead logged but not emailed:", entry.email); return; }
+  const from = process.env.LEAD_EMAIL_FROM || "Ageless Fitness <onboarding@resend.dev>";
+  const name = [entry.firstName, entry.lastName].filter(Boolean).join(" ") || "New lead";
+  const rows = [
+    ["Name", name], ["Phone", entry.phone], ["Email", entry.email],
+    ["Location", entry.location], ["Consent", entry.consent ? "Yes" : "No"],
+    ["Captured", entry.ts],
+  ];
+  if (entry.gclid) rows.push(["gclid", entry.gclid]);
+  if (entry.utmCampaign) rows.push(["Campaign", entry.utmCampaign]);
+  const html =
+    `<h2 style="font-family:system-ui,sans-serif;">New Ageless Fitness lead</h2>` +
+    `<table style="font-family:system-ui,sans-serif;font-size:15px;border-collapse:collapse;">` +
+    rows.map(([k, v]) => `<tr><td style="padding:4px 14px 4px 0;color:#667;">${esc(k)}</td><td style="padding:4px 0;"><b>${esc(v || "—")}</b></td></tr>`).join("") +
+    `</table>` +
+    (entry.consentRecord ? `<p style="font-family:system-ui,sans-serif;font-size:11.5px;color:#889;margin-top:16px;">Consent recorded ${esc(entry.consentRecord.consent_timestamp)} (IP ${esc(entry.consentRecord.consent_ip || "—")}).<br>${esc(entry.consentRecord.consent_text)}</p>` : "");
+  const text = rows.map(([k, v]) => `${k}: ${v || "—"}`).join("\n");
+  fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from, to: [toEmail], reply_to: entry.email || undefined,
+      subject: `New Ageless lead — ${name} (${entry.location})`, html, text,
+    }),
+  })
+    .then(async (r) => { if (!r.ok) console.warn("[email] send", r.status, (await r.text()).slice(0, 200)); })
+    .catch((e) => console.warn("[email] send failed:", e.message));
+}
+
 /* ── Lead capture ───────────────────────────────────────────────────────────
    POST /track-click  { action:'join', location, firstName,lastName,phone,email,
    consent, ... }  Upserts the contact in GoHighLevel (tagged leadTag + the
@@ -180,6 +217,7 @@ app.post("/track-click", async (req, res) => {
     const ip = (xff ? String(xff).split(",")[0].trim() : null) || req.socket?.remoteAddress || null;
     const nowIso = new Date().toISOString();
     const isLead = action === "join" && !!email;
+    const locObj = LOCATIONS[location] || {};
 
     // Server-side consent enforcement — never trust the client alone.
     if (isLead && consent !== true) {
@@ -212,9 +250,14 @@ app.post("/track-click", async (req, res) => {
     }
     console.log(`[track-click] ${nowIso} | ${action} | loc=${location || "?"} | email=${email || "none"}`);
 
-    // Create/update the GoHighLevel contact in THIS club's subaccount.
+    // Email-only clubs (leadEmail set, e.g. Aurora) skip GoHighLevel entirely —
+    // the lead is emailed to their inbox instead.
+    if (isLead && locObj.leadEmail) emailLead(locObj.leadEmail, entry);
+
+    // Create/update the GoHighLevel contact in THIS club's subaccount
+    // (skipped for email-only clubs so a global GHL fallback can't catch them).
     const creds = ghlCredsFor(location);
-    if (creds && isLead) {
+    if (creds && isLead && !locObj.leadEmail) {
       const headers = { Authorization: `Bearer ${creds.token}`, Version: "2021-07-28", "Content-Type": "application/json" };
       const fullName = [firstName, lastName].filter(Boolean).join(" ") || undefined;
       // Brand tag on every lead, plus the location slug so you can tell clubs apart.

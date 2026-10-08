@@ -564,12 +564,16 @@
     var ty = form.querySelector('.af-thankyou');
     if (fields) fields.style.display = 'none';
     if (!ty) return;
-    ty.innerHTML =
-      '<div class="chk"><i class="ti ti-check" style="color:var(--blue);font-size:30px;"></i></div>' +
-      '<h3>Thanks, <span class="af-ty-name"></span>!</h3>' +
-      '<p>Your request is in. The last step is to pick a time for your free assessment — choose whatever works best for you.</p>' +
-      '<a class="btn btn-lg af-ty-book" style="text-decoration:none;">Schedule My Free Assessment →</a>' +
-      '<p class="af-note" style="margin-top:14px;">Prefer we call you? We’ll reach out to set up your visit either way.</p>';
+    ty.innerHTML = bookUrl
+      ? ('<div class="chk"><i class="ti ti-check" style="color:var(--blue);font-size:30px;"></i></div>' +
+         '<h3>Thanks, <span class="af-ty-name"></span>!</h3>' +
+         '<p>Your request is in. The last step is to pick a time for your free assessment — choose whatever works best for you.</p>' +
+         '<a class="btn btn-lg af-ty-book" style="text-decoration:none;">Schedule My Free Assessment →</a>' +
+         '<p class="af-note" style="margin-top:14px;">Prefer we call you? We’ll reach out to set up your visit either way.</p>')
+      : ('<div class="chk"><i class="ti ti-check" style="color:var(--blue);font-size:30px;"></i></div>' +
+         '<h3>Thanks, <span class="af-ty-name"></span>!</h3>' +
+         '<p>Your request is in. Our team will reach out shortly to set up your free assessment.</p>' +
+         '<p class="af-note" style="margin-top:14px;">Keep an eye on your email and phone.</p>');
     ty.querySelector('.af-ty-name').textContent = first || 'there';
     var book = ty.querySelector('.af-ty-book');
     if (book && bookUrl) book.setAttribute('href', bookUrl);

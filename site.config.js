@@ -72,5 +72,15 @@ module.exports = {
       address:    { street: "4264 N Cypress Ln", city: "Bloomington", state: "IN", zip: "47404" },
       scheduleUrl:"https://api.leadconnectorhq.com/widget/booking/irAa7fUFORwGQmbtwYkH",
     },
+    // Aurora, IN — does NOT use GoHighLevel. Leads are emailed to the inbox below
+    // instead (set leadEmail). No booking calendar, so scheduleUrl stays blank.
+    // (Email sending needs RESEND_API_KEY in env — see .env.example.)
+    aurora: {
+      market:     "Aurora",
+      phone:      "812-926-3655",
+      address:    { street: "102 Sycamore Estates Dr", city: "Aurora", state: "IN", zip: "47001" },
+      scheduleUrl:"",
+      leadEmail:  "agelessauroraIN@gmail.com",
+    },
   },
 };
