@@ -188,7 +188,9 @@ function ghlCredsFor(slug) {
 function emailLead(toEmail, entry) {
   const key = process.env.RESEND_API_KEY;
   if (!key) { console.warn("[email] RESEND_API_KEY not set — lead logged but not emailed:", entry.email); return; }
-  const from = process.env.LEAD_EMAIL_FROM || "Ageless Fitness <onboarding@resend.dev>";
+  // Default From uses the account's verified Resend domain (gymopsapp.com), so
+  // only RESEND_API_KEY needs setting. Override with LEAD_EMAIL_FROM if desired.
+  const from = process.env.LEAD_EMAIL_FROM || "Ageless Fitness <leads@gymopsapp.com>";
   const name = [entry.firstName, entry.lastName].filter(Boolean).join(" ") || "New lead";
   const rows = [
     ["Name", name], ["Phone", entry.phone], ["Email", entry.email],
