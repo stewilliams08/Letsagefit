@@ -85,5 +85,19 @@ module.exports = {
       // Fitness LLC (the d/b/a stays the shared "Ageless Fitness" brand).
       legalEntity:"JBS Fitness LLC",
     },
+    // Estero, FL — runs under its OWN brand name ("Stronger for Longer"), not
+    // Ageless Fitness. Uses GoHighLevel like Bloomington: set GHL_TOKEN_ESTERO +
+    // GHL_LOC_ESTERO in Railway (GHL_LOC_ESTERO = qfwVKq4ZztKyKIW6QSkL).
+    estero: {
+      market:     "Estero",
+      phone:      "239-444-8439",
+      address:    { street: "21740 S. Tamiami Trail, Suite 109", city: "Estero", state: "FL", zip: "33928" },
+      scheduleUrl:"https://api.leadconnectorhq.com/widget/booking/xduMj58tTCNzcU7uvHcE",
+      // Its own consumer-facing brand (name + logo split: "Stronger for Longer").
+      brand: { name: "Stronger for Longer", logoLead: "Stronger for ", logoAccent: "Longer" },
+      // Operated by a different company, so its TCPA consent names Tapper Health,
+      // Inc (the d/b/a is the "Stronger for Longer" brand).
+      legalEntity:"Tapper Health, Inc",
+    },
   },
 };

@@ -38,12 +38,19 @@ buildConsentText(CONSENT_LOC);
 // `legalEntity` on its location block); otherwise it uses the shared default.
 // Used for BOTH the displayed checkbox AND the recorded consent, so they can
 // never drift. Validated at boot below.
+// Per-location brand (name + logo parts). A club may rebrand by setting `brand`
+// on its location block; otherwise it uses the shared CONFIG.brand.
+function brandFor(slug) {
+  return Object.assign({}, CONFIG.brand, (LOCATIONS[slug] || {}).brand || {});
+}
+
 function consentLocFor(slug) {
   const loc = LOCATIONS[slug] || {};
   return {
     legalEntity: loc.legalEntity || (CONFIG.legal && CONFIG.legal.legalEntity),
-    dbaName:     loc.dbaName || (CONFIG.legal && CONFIG.legal.dbaName),
-    gymName:     CONFIG.brand && CONFIG.brand.name,
+    // The d/b/a the customer recognizes = this club's brand name.
+    dbaName:     loc.dbaName || brandFor(slug).name,
+    gymName:     brandFor(slug).name,
     locationKey: slug || CONSENT_LOC.locationKey,
   };
 }
@@ -62,7 +69,7 @@ function gymConfigFor(slug) {
   const loc = LOCATIONS[slug] || {};
   const a = loc.address || {};
   return {
-    gymName: CONFIG.brand && CONFIG.brand.name,
+    gymName: brandFor(slug).name,
     marketCity: loc.market || "",
     locationKey: slug,
     phone: loc.phone || "",
@@ -145,15 +152,23 @@ function resultCards() {
 // ── Render the page for one location ──
 function renderPage(slug) {
   const cfg = gymConfigFor(slug);
+  const brand = brandFor(slug);
   const gymJson = JSON.stringify(cfg).replace(/</g, "\\u003c");
   const phoneDigits = String(cfg.phone || "").replace(/[^0-9]/g, "");
   const results = resultCards();
+  const state = (cfg.addressParts && cfg.addressParts.state) || "";
+  const navLogo  = esc(brand.logoLead || brand.name || "") + "<b>" + esc(brand.logoAccent || "") + "</b>";
+  const footLogo = esc(brand.logoLead || brand.name || "") + '<b style="color:#F2907A;">' + esc(brand.logoAccent || "") + "</b>";
   // Absolute site origin for canonical + Open Graph (link-preview) tags.
-  const siteUrl = "https://www." + String((CONFIG.brand && CONFIG.brand.domain) || "letsagefit.com").replace(/^www\./, "");
+  const siteUrl = "https://www." + String((brand.domain) || "letsagefit.com").replace(/^www\./, "");
   return TEMPLATE
     .replace("{{RESULTS_HIDDEN}}", results.count ? "" : "hidden")
     .replace("{{RESULT_CARDS}}", results.cards)
     .replace(/\{\{SITE_URL\}\}/g, siteUrl)
+    .replace(/\{\{BRAND_NAME\}\}/g, esc(brand.name || ""))
+    .replace(/\{\{LOGO_FOOT\}\}/g, footLogo)
+    .replace(/\{\{LOGO\}\}/g, navLogo)
+    .replace(/\{\{STATE\}\}/g, esc(state))
     .replace(/\{\{MARKET_CITY\}\}/g, esc(cfg.marketCity))
     .replace(/\{\{ADDRESS\}\}/g, esc(cfg.address))
     .replace(/\{\{PHONE_DIGITS\}\}/g, phoneDigits)
