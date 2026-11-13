@@ -95,10 +95,9 @@ module.exports = {
       scheduleUrl:"https://api.leadconnectorhq.com/widget/booking/xduMj58tTCNzcU7uvHcE",
       // Its own consumer-facing brand (name + logo split: "Stronger for Longer").
       brand: { name: "Stronger for Longer", logoLead: "Stronger for ", logoAccent: "Longer" },
-      // TODO (before launch): set Estero's operating LLC for the TCPA consent.
-      // Until set, consent falls back to the shared Williams Fortitude entity,
-      // which is WRONG for this club — do not run ads until this is filled in.
-      // legalEntity:"____ LLC",
+      // Operated by a different company, so its TCPA consent names Tapper Health,
+      // Inc (the d/b/a is the "Stronger for Longer" brand).
+      legalEntity:"Tapper Health, Inc",
     },
   },
 };
