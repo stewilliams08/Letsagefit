@@ -95,9 +95,10 @@ module.exports = {
       scheduleUrl:"https://api.leadconnectorhq.com/widget/booking/xduMj58tTCNzcU7uvHcE",
       // Its own consumer-facing brand (name + logo split: "Stronger for Longer").
       brand: { name: "Stronger for Longer", logoLead: "Stronger for ", logoAccent: "Longer" },
-      // Operated by a different company, so its TCPA consent names Tapper Health,
-      // Inc (the d/b/a is the "Stronger for Longer" brand).
+      // Operated by a different company; its TCPA consent names the entity alone
+      // (Tapper Health, Inc) with no "d/b/a" clause.
       legalEntity:"Tapper Health, Inc",
+      consentOmitDba: true,
     },
   },
 };

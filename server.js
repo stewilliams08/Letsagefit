@@ -46,11 +46,13 @@ function brandFor(slug) {
 
 function consentLocFor(slug) {
   const loc = LOCATIONS[slug] || {};
+  // A club may omit the d/b/a clause so consent names the operating entity alone.
+  const omitDba = !!loc.consentOmitDba;
   return {
     legalEntity: loc.legalEntity || (CONFIG.legal && CONFIG.legal.legalEntity),
-    // The d/b/a the customer recognizes = this club's brand name.
-    dbaName:     loc.dbaName || brandFor(slug).name,
-    gymName:     brandFor(slug).name,
+    // The d/b/a the customer recognizes = this club's brand name (unless omitted).
+    dbaName:     omitDba ? "" : (loc.dbaName || brandFor(slug).name),
+    gymName:     omitDba ? "" : brandFor(slug).name,
     locationKey: slug || CONSENT_LOC.locationKey,
   };
 }
